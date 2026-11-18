@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Stranger Stuff</title>
+  <meta name="description" content="Traverse la ville envahie par les zombies, armé d'une simple lampe torche.">
+
+  <!-- viewport-fit=cover : le jeu occupe tout l'écran, y compris sous l'encoche -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+  <!-- PWA : ces balises rendent l'application installable -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1a1033">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+
+  <!-- Équivalents pour iPhone, qui ne lit pas tout le manifest -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stranger Stuff">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Le monde du jeu est dessiné dans ce canvas -->
+  <canvas id="game" aria-label="Zone de jeu"></canvas>
+
+  <!-- Barre d'informations pendant la partie -->
+  <div id="hud" class="hidden">
+    <div class="hud-row">
+      <div id="hearts" role="img" aria-label="Vies restantes"></div>
+      <div id="score" aria-label="Score">0</div>
+      <button id="btn-pause" class="icon-btn" aria-label="Mettre en pause">
+        <svg viewBox="0 0 8 8" aria-hidden="true"><path d="M1 1h2v6H1zM5 1h2v6H5z"/></svg>
+      </button>
+    </div>
+    <div class="hud-row hud-gauges">
+      <div class="gauge" aria-label="Batterie de la lampe">
+        <svg viewBox="0 0 8 8" aria-hidden="true"><path d="M3 0h2v1h2v7H1V1h2z"/></svg>
+        <div class="gauge-track"><div id="battery-fill" class="gauge-fill"></div></div>
+      </div>
+      <div class="gauge" aria-label="Progression dans le niveau">
+        <span id="level-num">1/5</span>
+        <div class="gauge-track"><div id="progress-fill" class="gauge-fill progress"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commandes tactiles -->
+  <div id="touch" class="hidden">
+    <div id="stick" class="hidden"><div id="knob"></div></div>
+    <p id="touch-hint">Glisse ton doigt pour marcher</p>
+    <button id="btn-light" aria-label="Allumer la lampe torche">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h6V5l5-3h1v12h-1l-5-3v-1H2z"/></svg>
+      <span>Lampe</span>
+    </button>
+  </div>
+
+  <!-- Titre du niveau, affiché brièvement au démarrage de chaque niveau -->
+  <div id="level-card" class="hidden" aria-live="polite">
+    <strong id="level-title"></strong>
+    <span id="level-sub"></span>
+  </div>
+
+  <!-- Message bref : policier, orbe Nova -->
+  <div id="toast" class="hidden" role="status"></div>
+
+  <!-- Menu principal -->
+  <section id="screen-menu" class="screen">
+    <h1 class="logo" aria-label="Stranger Stuff">
+      <span data-text="STRANGER">STRANGER</span>
+      <span data-text="STUFF">STUFF</span>
+    </h1>
+    <div class="panel">
+      <p class="story">Millbrook, novembre 1986. Les morts ont envahi la ville. Traverse cinq quartiers jusqu'à la station de radio pour appeler les secours.</p>
+      <button id="btn-play" class="btn primary">Jouer</button>
+      <button id="btn-install" class="btn hidden">Installer le jeu</button>
+      <p id="ios-hint" class="hint hidden">Pour l'installer sur iPhone : touche Partager, puis « Sur l'écran d'accueil ».</p>
+      <p class="hint">Éclaire les zombies pour les figer. Dans chaque quartier, trouve le policier et l'orbe Nova.</p>
+      <p class="hint desktop-only">Clavier : flèches pour marcher, espace pour la lampe, P pour la pause.</p>
+      <p id="best" class="best"></p>
+    </div>
+  </section>
+
+  <!-- Pause -->
+  <section id="screen-pause" class="screen hidden">
+    <div class="panel">
+      <h2>Partie en pause</h2>
+      <button id="btn-resume" class="btn primary">Reprendre</button>
+      <button id="btn-sound" class="btn">Couper le son</button>
+      <button id="btn-quit" class="btn">Retour au menu</button>
+    </div>
+  </section>
+
+  <!-- Défaite -->
+  <section id="screen-over" class="screen hidden">
+    <div class="panel">
+      <h2>Ils t'ont eu</h2>
+      <p id="over-text" class="story"></p>
+      <button id="btn-retry" class="btn primary">Rejouer ce niveau</button>
+      <button id="btn-over-menu" class="btn">Retour au menu</button>
+    </div>
+  </section>
+
+  <!-- Victoire -->
+  <section id="screen-win" class="screen hidden">
+    <div class="panel">
+      <h2>Message envoyé</h2>
+      <p class="story">La radio crépite, les secours arrivent à l'aube. Millbrook te doit une fière chandelle.</p>
+      <p id="win-text" class="best"></p>
+      <button id="btn-again" class="btn primary">Rejouer depuis le début</button>
+    </div>
+  </section>
+
+  <script src="game.js"></script>
+</body>
+</html>
